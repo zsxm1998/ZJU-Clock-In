@@ -108,7 +108,7 @@ class ClockIn(object):
         new_info['jcqzrq'] = ""
         new_info['gwszdd'] = ""
         new_info['szgjcs'] = ""
-        
+
         # 2021.08.05 Fix 2
         magics = re.findall(r'"([0-9a-f]{32})":\s*"([^\"]+)"', html)
         for item in magics:
@@ -178,6 +178,10 @@ def main(username, password):
             print('已为您打卡成功！')
         else:
             print(res['m'])
+            if res['m'].find("已经") != -1: # 已经填报过了 不报错
+                pass
+            else:
+                raise Exception
     except Exception:
         print('数据提交失败')
         raise Exception
