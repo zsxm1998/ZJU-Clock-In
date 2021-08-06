@@ -10,7 +10,7 @@ import time
 import sys
 
 
-class DaKa(object):
+class ClockIn(object):
     """Hit card class
 
     Attributes:
@@ -109,10 +109,11 @@ class DaKa(object):
         new_info['gwszdd'] = ""
         new_info['szgjcs'] = ""
         
-        # 2021.08.05 Fix
-        new_info['23676ad88cb0953fa0e229b32e886f62'] = re.findall(r'"23676ad88cb0953fa0e229b32e886f62":\s*"([^\"]+)",', html)[0]
-        new_info['f6f259ba6791b79b64e0559fbe41050d'] = re.findall(r'"f6f259ba6791b79b64e0559fbe41050d":\s*"([^\"]+)",', html)[0]
-        
+        # 2021.08.05 Fix 2
+        magics = re.findall(r'"([0-9a-f]{32})":\s*"([^\"]+)"', html)
+        for item in magics:
+            new_info[item[0]] = item[1]
+
         self.info = new_info
         return new_info
 
@@ -152,7 +153,7 @@ def main(username, password):
           datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print("🚌 打卡任务启动")
 
-    dk = DaKa(username, password)
+    dk = ClockIn(username, password)
 
     print("登录到浙大统一身份认证平台...")
     try:
@@ -170,7 +171,7 @@ def main(username, password):
         print('获取信息失败，请手动打卡，更多信息: ' + str(err))
         raise Exception
 
-    print('正在为您打卡打卡打卡')
+    print('正在为您打卡')
     try:
         res = dk.post()
         if str(res['e']) == '0':
