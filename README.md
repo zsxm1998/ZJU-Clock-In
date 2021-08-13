@@ -4,7 +4,8 @@
 
 <img src="https://gitee.com/dizhipeng/image/raw/master/img/image-20210806110359202.png" alt="image-20210806110359202" style="zoom:50%;" />
 
-
+**打个广告**
+低分定点 选课脚本（仅供学习研究）：https://github.com/Tenderness-5787/ZJU-Course-Selection
 
  **如果看不到本文的图片，就查看仓库内的pdf文件**
 
