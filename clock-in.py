@@ -8,7 +8,7 @@ import re
 import datetime
 import time
 import sys
-# import ddddocr
+import ddddocr
 
 
 class ClockIn(object):
@@ -69,14 +69,14 @@ class ClockIn(object):
         today = datetime.date.today()
         return "%4d%02d%02d" % (today.year, today.month, today.day)
 
-#     def get_captcha(self):
-#         """Get CAPTCHA code"""
-#         cookie_dict = {'eai-sess': '9k1adtbd8ti87t488f786vvtl3'}
-#         self.sess.cookies = requests.cookies.cookiejar_from_dict(cookie_dict)
-#         resp = self.sess.get(self.CAPTCHA_URL)
-#         captcha = self.ocr.classification(resp.content)
-#         print("验证码：", captcha)
-#         return captcha
+    def get_captcha(self):
+        """Get CAPTCHA code"""
+        cookie_dict = {'eai-sess': '9k1adtbd8ti87t488f786vvtl3'}
+        self.sess.cookies = requests.cookies.cookiejar_from_dict(cookie_dict)
+        resp = self.sess.get(self.CAPTCHA_URL)
+        captcha = self.ocr.classification(resp.content)
+        print("验证码：", captcha)
+        return captcha
 
     def get_info(self, html=None):
         """Get hitcard info, which is the old info with updated new time."""
@@ -119,7 +119,7 @@ class ClockIn(object):
         new_info['jcqzrq'] = ""
         new_info['gwszdd'] = ""
         new_info['szgjcs'] = ""
-#         new_info['verifyCode'] = self.get_captcha()
+        new_info['verifyCode'] = self.get_captcha()
 
         # 2021.08.05 Fix 2
         magics = re.findall(r'"([0-9a-f]{32})":\s*"([^\"]+)"', html)
