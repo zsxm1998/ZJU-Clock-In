@@ -21,7 +21,9 @@ jobs:
       - name: Install packages
         run: |
           pip3 install requests
-          pip3 install ddddocr
+          pip3 install numpy
+          pip3 install cv2
+          pip3 install onnxruntime
       - name: Clock In
         env:
           ACCOUNT: ${{ secrets.ACCOUNT }}
