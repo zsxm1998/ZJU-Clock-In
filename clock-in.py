@@ -8,11 +8,11 @@ import re
 import datetime
 import time
 import sys
+import ddddocr
 
 
 class ClockIn(object):
     """Hit card class
-
     Attributes:
         username: (str) 浙大统一认证平台用户名（一般为学号）
         password: (str) 浙大统一认证平台密码
@@ -25,13 +25,16 @@ class ClockIn(object):
     LOGIN_URL = "https://zjuam.zju.edu.cn/cas/login?service=https%3A%2F%2Fhealthreport.zju.edu.cn%2Fa_zju%2Fapi%2Fsso%2Findex%3Fredirect%3Dhttps%253A%252F%252Fhealthreport.zju.edu.cn%252Fncov%252Fwap%252Fdefault%252Findex"
     BASE_URL = "https://healthreport.zju.edu.cn/ncov/wap/default/index"
     SAVE_URL = "https://healthreport.zju.edu.cn/ncov/wap/default/save"
+    CAPTCHA_URL = 'https://healthreport.zju.edu.cn/ncov/wap/default/code'
     HEADERS = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
     }
+    
     def __init__(self, username, password):
         self.username = username
         self.password = password
         self.sess = requests.Session()
+        self.ocr = ddddocr.DdddOcr()
 
     def login(self):
         """Login to ZJU platform"""
@@ -65,6 +68,15 @@ class ClockIn(object):
         """Get current date"""
         today = datetime.date.today()
         return "%4d%02d%02d" % (today.year, today.month, today.day)
+
+    def get_captcha(self):
+        """Get CAPTCHA code"""
+        cookie_dict = {'eai-sess': '9k1adtbd8ti87t488f786vvtl3'}
+        self.sess.cookies = requests.cookies.cookiejar_from_dict(cookie_dict)
+        resp = self.sess.get(self.CAPTCHA_URL)
+        captcha = self.ocr.classification(resp.content)
+        print("验证码：", captcha)
+        return captcha
 
     def get_info(self, html=None):
         """Get hitcard info, which is the old info with updated new time."""
@@ -107,6 +119,7 @@ class ClockIn(object):
         new_info['jcqzrq'] = ""
         new_info['gwszdd'] = ""
         new_info['szgjcs'] = ""
+        new_info['verifyCode'] = self.get_captcha()
 
         # 2021.08.05 Fix 2
         magics = re.findall(r'"([0-9a-f]{32})":\s*"([^\"]+)"', html)
@@ -143,7 +156,6 @@ class DecodeError(Exception):
 
 def main(username, password):
     """Hit card process
-
     Arguments:
         username: (str) 浙大统一认证平台用户名（一般为学号）
         password: (str) 浙大统一认证平台密码
