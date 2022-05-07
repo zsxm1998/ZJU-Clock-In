@@ -1,5 +1,9 @@
 # 探究自动打卡的原理与对抗策略
 
+## What's New? (updated on May 7th)
+
+现已支持验证码识别+自动填写～
+
 ## 使用须知
 
 ZJU 打卡脚本参考样例 by：Tenderness
